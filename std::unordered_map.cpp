@@ -23,7 +23,6 @@ int sumvalue(const unordered_map<string, int>& myMap){
     return sum;
 }
 
-
 string findkey(ifstream& kaynak){
     string line;
         
@@ -75,7 +74,7 @@ int main(){
     ifstream log;
     string line;
 
-    log.open("/Users/egolboyu/Desktop/bau/access_log.txt"); // kaynak kodunu kendi bilgisayarınıza göre yazın gençler ..
+    log.open("/Users/egolboyu/Desktop/access_log.txt"); // kaynak kodunu kendi bilgisayarınıza göre yazın gençler ..
     if (!log.is_open()) {
            cerr << "File not opened!" << endl;
            return -1; // Hata durumunda programı sonlandır ve -1 değerini döndürür.

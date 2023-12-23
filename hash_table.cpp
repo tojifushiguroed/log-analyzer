@@ -111,7 +111,7 @@ public:
             }
 
             if (maxValue > 0) {
-                cout << "Anahtar: " << hashtable[maxIndex]->key << " Değer: " << maxValue << endl;
+                cout << "Key: " << hashtable[maxIndex]->key << " Value: " << maxValue << endl;
                 hashtable[maxIndex]->value = 0;  // Anahtarı işaretleyerek tekrar sayılmamasını sağla
             }
         }
@@ -130,29 +130,17 @@ public:
     }
 };
 
-void processKeys(ifstream& kaynak, SimpleHashTable& myHashTable) {
-    string satır;
+void processKeys(ifstream& source, SimpleHashTable& myHashTable) {
+    string line;
 
-    while (getline(kaynak, satır, '\n')) {
-        size_t baslangıcPozisyonu_GET = satır.find("GET");
-        size_t baslangıcPozisyonu_HEAD = satır.find("HEAD");
-        size_t baslangıcPozisyonu_POST = satır.find("POST");
+    while (getline(source, line, '\n')) {
+        size_t start_position = line.find(' ') + 1;
+        size_t end_position = line.find("HTTP");
 
-        size_t baslangıcPozisyonu = min({baslangıcPozisyonu_GET, baslangıcPozisyonu_HEAD, baslangıcPozisyonu_POST});
+        if (start_position != string::npos && end_position != string::npos) {
+            string key = line.substr(start_position, end_position - start_position);
 
-        size_t bitisPozisyonu = satır.find("HTTP");
-
-        if (baslangıcPozisyonu != string::npos && bitisPozisyonu != string::npos) {
-            string key;
-            if (baslangıcPozisyonu_GET != string::npos) {
-                key = satır.substr(baslangıcPozisyonu_GET + 3, bitisPozisyonu - (baslangıcPozisyonu_GET + 3));
-            } else if (baslangıcPozisyonu_HEAD != string::npos) {
-                key = satır.substr(baslangıcPozisyonu_HEAD + 4, bitisPozisyonu - (baslangıcPozisyonu_HEAD + 4));
-            } else if (baslangıcPozisyonu_POST != string::npos) {
-                key = satır.substr(baslangıcPozisyonu_POST + 4, bitisPozisyonu - (baslangıcPozisyonu_POST + 4));
-            }
-
-            // Boşlukları temizle
+            // Remove spaces
             key.erase(remove_if(key.begin(), key.end(), ::isspace), key.end());
 
             if (!key.empty()) {
@@ -162,10 +150,9 @@ void processKeys(ifstream& kaynak, SimpleHashTable& myHashTable) {
     }
 }
 
-
 int main() {
     auto start = high_resolution_clock::now();
-    ifstream log("/Users/egolboyu/Desktop/bau/access_log.txt");
+    ifstream log("/Users/egolboyu/Desktop/access_log.txt");
     if (!log.is_open()) {
         cerr << "Dosya açma hatası!" << endl;
         return -1;
@@ -183,10 +170,10 @@ int main() {
     
     // Toplam sayıyı yazdır
     int totalCount = myHashTable.getTotalCount();
-    cout << "Toplam: " << totalCount << endl;
+    cout << "Sum: " << totalCount << endl;
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);
-    cout << "Geçen süre: " << duration.count() << " milisaniye." << endl;
+    cout << "Total Elapsed Time :" << duration.count() << " millisecond." << endl;
     return 0;
 }
